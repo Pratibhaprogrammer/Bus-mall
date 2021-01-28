@@ -1,4 +1,6 @@
         'use strict'
+        
+         
         function mallImage(productName, image){
           this.name = productName
           this.timesClicked = 0;
@@ -9,9 +11,29 @@
 
         }
         mallImage.allImages = [];
+
+        function fetchObject(savedAs){
+          var stringify = localStorage.getItem(savedAs);
+          if (stringify === null){
+            return null;
+          }
+          return JSON.parse(stringify);
+        }
+        var storageResults = fetchObject('productArray');
+        console.log(storageResults, 'storage-results')
+        if (storageResults === null){
+          //here I'm going to call the function that makes all of my products
+          makeProducts()
+          console.log('I made new products')
+        }
+        else{
+           //my storage results are going to be my mallImage.allImages array
+           mallImage.allImages = storageResults;
+           console.log(mallImage.allImages, 'this is my mall image array')
+          }
       
         
-
+        function makeProducts(){
         new mallImage('bag','https://raw.githubusercontent.com/codefellows/seattle-201d71/main/class-11/lab/assets/bag.jpg');
       
         new mallImage('banana','https://raw.githubusercontent.com/codefellows/seattle-201d71/main/class-11/lab/assets/banana.jpg');
@@ -49,6 +71,7 @@
         new mallImage('water can','https://raw.githubusercontent.com/codefellows/seattle-201d71/main/class-11/lab/assets/water-can.jpg');
       
         new mallImage('wine glass','https://raw.githubusercontent.com/codefellows/seattle-201d71/main/class-11/lab/assets/wine-glass.jpg');
+      }
         
         var productContainer = document.getElementById('product-container');
         var leftImage = document.getElementById('left-image');
@@ -103,10 +126,14 @@
       }
       console.log(counter)
         if(counter === 25){
+        
           productContainer.removeEventListener('click', listener);
         //resultList();
         generateData()
         generateCharts()
+        storeObject('timesClicked',timesClicked);
+        storeObject('timesShown', timesShown);
+        storeObject('productArray', mallImage.allImages);
         }
       var newImage = generateRandomProducts();
       renderImages(newImage[0], newImage[1], newImage[2]);
@@ -151,6 +178,7 @@
     timesShown.push(mallImage.allImages[i].timesShown);
   }
   }
+ 
   console.log(productName, 'product name array');
   console.log(timesClicked, 'times clicked array');
   console.log(timesShown, 'times shown array')
@@ -289,4 +317,10 @@
       }
     }
   });
+}
+
+function storeObject(savedAs, obj){
+  var stringify = JSON.stringify(obj);
+  console.log(stringify)
+  localStorage.setItem(savedAs, stringify)
 }
